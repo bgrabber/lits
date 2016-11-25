@@ -183,19 +183,19 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 
 ###Installing Lily-Hbase-Indexer & Solr services###
     Instalation is really simple. Just add both services(Lily and Solr) to your cluster.
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/add-service.png "Adding service to cluster")
+    ![alt text](images/add-service.png "Adding service to cluster")
 
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/install-solr.png "Choosing Solr to install")
+    ![alt text](images/install-solr.png "Choosing Solr to install")
 
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/solr-hosts.png "Choosing Solr hosts")
+    ![alt text](images/solr-hosts.png "Choosing Solr hosts")
 
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
+    ![alt text](images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
 
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/add-service.png "Adding service to cluster")
+    ![alt text](images/add-service.png "Adding service to cluster")
 
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/install-lily.png "Choosing Lily to install")
+    ![alt text](images/install-lily.png "Choosing Lily to install")
 
-    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/lily-hosts.png "Choosing Lily to install")
+    ![alt text](images/lily-hosts.png "Choosing Lily to install")
 
 ###Configuring Solr###
     Solr configuration is rather simple. All you need to do manually - properly set up schema.xml - configuration file that will know what columns from SolrDocument that will Lily send to Solr should be indexed and stored. To tart with, we need to create so-called Solr collection - set of fields for indexing that are gathered in one common configuration. Solr provide scripts to prepare default collection. We'll use them and then change the configuration a bit. Login into your *cloudera.master* node and let's start:
