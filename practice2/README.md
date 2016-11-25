@@ -47,6 +47,14 @@
   * Column **date_performed** date when record was performed as java.util.Date
 
 * **IMPORTANT!**. Few things that you should consider when implementing entities:
+  * When using Kundera, you should add dependency on **latest release** and use **hbase-v2** artifact id
+```xml
+<dependency>
+  <groupId>com.impetus.kundera.client</groupId>
+  <artifactId>kundera-hbase-v2</artifactId>
+  <version>3.6</version>
+</dependency>
+```  
   * in **Medical Record** UUID is a concatenation of keys. DO not use **@EmbeddedId** for concatenation. Better to use simple **@Id** with byte array and set it with *ArrayUtils.addAll(patient_key,medical_record_key)*
   * Kundera can connect to default Zookeeper port. To change zookeeper host and port, you should add Hbase-specific configuration file in XML format with content as described below:
 
@@ -73,9 +81,9 @@
       <property name="kundera.client.property" value="name_of_your_xml_with_properties.xml" />
 ```
 
-  * When adding **@Table** your should put *schema* property you should put **default@your_persistence_unit** do that tables will be created in default Hbase namespace.
+* When adding **@Table** your should put *schema* property you should put **default@your_persistence_unit** do that tables will be created in default Hbase namespace.
 
-  * When adding property *kundera.ddl.auto.prepare* to your persistence.xml, put value **update** instead of **create**, as Kundera will try to delete reserved **default** namespace in Hbase.
+* When adding property *kundera.ddl.auto.prepare* to your persistence.xml, put value **update** instead of **create**, as Kundera will try to delete reserved **default** namespace in Hbase.
 
 
 ##Running main program with tests##
@@ -111,7 +119,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 
     To properly launch test you should make an instance of your test class and then execute *runSuite()* method to launch all tests.
 
-  * So at the end, your entry point should have something similar flow:
+* So at the end, your entry point should have something similar flow:
 ```java
     public static void main(String[] args) {
       putDataInStorage()
@@ -121,7 +129,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
 
 ###Adding plugins###
-  * Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into **<build><plugins></plugins></build>** section(if there is none, create it in pom.xml).
+* Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into **<build><plugins></plugins></build>** section(if there is none, create it in pom.xml).
 ```xml
           <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -151,7 +159,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
 
 ###Running example###
-  * Now we need to create our fat jar and run it on cluster. To do this we need to execute maven packaging command in project directory and then copy created jar into cluster(**IMPORTANT** put your jar to cloudera.master as by default it's the node where zookeeper service is running).
+* Now we need to create our fat jar and run it on cluster. To do this we need to execute maven packaging command in project directory and then copy created jar into cluster(**IMPORTANT** put your jar to cloudera.master as by default it's the node where zookeeper service is running).
 ```bash
     cd path_to_project
     mvn clean package
@@ -160,7 +168,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
     //now lets move fat jar to cloudera.master
     scp your-jar-with-dependencies.jar aws_user@cloudera.master:~/
 ```
-  * Now we need to run the example and collect the output.**IMPORTANT you should not forget to collect the execution output as it will be needed as a part of practice acceptance**
+* Now we need to run the example and collect the output.**IMPORTANT you should not forget to collect the execution output as it will be needed as a part of practice acceptance**
 ```bash
   //logging in on cloudera master
   ssh aws_user@cloudera.master
@@ -175,19 +183,19 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 
 ###Installing Lily-Hbase-Indexer & Solr services###
     Instalation is really simple. Just add both services(Lily and Solr) to your cluster.
-    ![alt text](images/add-service.png "Adding service to cluster")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/add-service.png "Adding service to cluster")
 
-    ![alt text](images/install-solr.png "Choosing Solr to install")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/install-solr.png "Choosing Solr to install")
 
-    ![alt text](images/solr-hosts.png "Choosing Solr hosts")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/solr-hosts.png "Choosing Solr hosts")
 
-    ![alt text](images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
 
-    ![alt text](images/add-service.png "Adding service to cluster")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/add-service.png "Adding service to cluster")
 
-    ![alt text](images/install-lily.png "Choosing Lily to install")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/install-lily.png "Choosing Lily to install")
 
-    ![alt text](images/lily-hosts.png "Choosing Lily to install")
+    ![alt text](https://github.com/marianfaryna/lits/tree/master/practice2/images/lily-hosts.png "Choosing Lily to install")
 
 ###Configuring Solr###
     Solr configuration is rather simple. All you need to do manually - properly set up schema.xml - configuration file that will know what columns from SolrDocument that will Lily send to Solr should be indexed and stored. To tart with, we need to create so-called Solr collection - set of fields for indexing that are gathered in one common configuration. Solr provide scripts to prepare default collection. We'll use them and then change the configuration a bit. Login into your *cloudera.master* node and let's start:
@@ -205,7 +213,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 
 ###Configuring Lily###
 
-    * Adjust Hbase
+* Adjust Hbase
       We need to update properties fof Hbase table that will have index. As Lily Indexer works with replica of data that comes to Hbase, we should update replication factor for table that will have index via Hbase shell. Login to *cloudera.master*
 ```bash
       ssh aws_user@cloudera.master
@@ -214,7 +222,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
       hbase shell> alter \'medical_records\', {NAME => \'medical_records\', REPLICATION_SCOPE => 1}
       hbase shell> enable \'medical_records\'
 ```
-    * Set Zookeeper quorum in Lily configuration.
+* Set Zookeeper quorum in Lily configuration.
       To do that, you need to add two properties to hbase-indexer-site.xml configuration file. Login to *cloudera.master*
 ```bash
       ssh aws_user@cloudera.master
@@ -234,7 +242,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
       //now restart Lily Indexer service from Cloudera UI
 
-    * Add proper configuration files
+* Add proper configuration files
       We need two configuration files for Lily. One is to define actual Indexer and bind it to Hbase table so Indexer can index data in specific Hbase table. The file is called *morphline-hbase-mapper.xml*. The content of this file is simple xml configuration as below
 ```xml
     <?xml version="1.0"?>
@@ -252,6 +260,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
 
 ###Viewing results###
-  * You can now login into Solr UI to check whether there are indexed entries.
-
-http://www.cloudera.com/documentation/enterprise/5-6-x/topics/search_config_hbase_indexer_for_search.html
+* You can now login into Solr UI to check whether there are indexed entries. To do that, you can go to Solr [web admin page at cloudera master *http://cloudera.master:8983/solr* and choose your Solr collection.
+    ![alt text](images/solr-collection.png "Choosing right collection")
+    ![alt text](images/collection-overview.png "Looking whether collection has data")
+    ![alt text](images/collection-query.png "Query collection data")
