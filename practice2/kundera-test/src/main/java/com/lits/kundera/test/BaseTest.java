@@ -8,8 +8,11 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public abstract class BaseTest {
@@ -370,6 +373,61 @@ public abstract class BaseTest {
             }
         }
         return false;
+    }
+
+    /**
+     * Checking the difference between full scan with value comparison and
+     * prefix scan that has the half of the key to see how fast the prefix scan is
+     *
+     * @param medicalRecordType type Of medical record we're searching for
+     * @param patientId patient id as a part of a medical record key
+     * @throws IOException
+     */
+    public void prefixScanTest(String medicalRecordType, byte[] patientId) throws IOException {
+        System.out.println("======= Starting... =======");
+        System.out.println("Preparing full scan");
+        //configuring scan to search only for efined medical record type
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(TABLES_MEDICAL_RECORD.getBytes(),
+                COLUMN_MEDICAL_RECORD_TYPE.getBytes(), CompareFilter.CompareOp.EQUAL, medicalRecordType.getBytes());
+
+        Scan fullScan = new Scan();
+        fullScan.setFilter(singleColumnValueFilter);
+        //start counting the time
+        long startTime = System.currentTimeMillis();
+
+        ResultScanner resultScanner = medicalRecordsTable.getScanner(fullScan);
+        scannerCheck(resultScanner, medicalRecordType, startTime);
+
+        //now with prefix
+        System.out.println("Preparing prefix scan");
+        Scan prefixScan = Util.createKeyPrefixScan(patientId);
+        prefixScan.setFilter(singleColumnValueFilter);
+
+        startTime = System.currentTimeMillis();
+
+       resultScanner = medicalRecordsTable.getScanner(prefixScan);
+       scannerCheck(resultScanner, medicalRecordType, startTime);
+
+        System.out.println("======= Finishing... =======");
+    }
+
+    private void scannerCheck(ResultScanner resultScanner, String medicalRecordType, long startTime) throws IOException {
+        long executionTime;
+        if(resultScanner.iterator().hasNext()) {
+            while(resultScanner.iterator().hasNext()) {
+                Result result = resultScanner.next();
+                byte[] value = result.getValue(TABLES_MEDICAL_RECORD.getBytes(),
+                        COLUMN_MEDICAL_RECORD_TYPE.getBytes());
+
+                if(Arrays.equals(value, medicalRecordType.getBytes())) {
+                    System.out.println("Found record");
+                    executionTime = System.currentTimeMillis() - startTime;
+                    System.out.printf("It took %d ms to find the record", executionTime);
+                }
+            }
+        } else {
+            System.out.println("Something went wrong, no record found. Check whether record with that type exists. Aborting.");
+        }
     }
 
     /**
