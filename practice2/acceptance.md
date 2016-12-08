@@ -5,7 +5,7 @@
 
 ###Attaching logs###
 
-  In second practice task there's a step when you must run your application and redirect the output into a file. There's an example in practice document how to do that. You should attach the link to the log file in practice acceptance document.
+  In second practice task there's a step when you must run your application and redirect the output into a file. There's an example in [practice document](https://github.com/marianfaryna/lits/blob/master/practice2/README.md) how to do that. You should attach the link to the log file in practice acceptance document.
 ```bash
 /usr/java/jdk1.7.0_67-cloudera/bin/java -classpath your-jar-with-dependencies.jar your.entry.PointClass >> asdf.log
 ```
@@ -29,7 +29,9 @@ hbase(main):001:0> list
 ###Solr Querying###
 
   The last thing you should do, is to provide a screenshot of Solr query page with some results that you've indexed with Solr.
-  To do that, go to Solr Service Web UI,select the collection and then go to Query tab. Hit the *Execute Query* button to execute basic query that should return all results from Solr. The result of a query must not be empty.
+  To do that, go to Solr Service Web UI,select the collection and then go to Query tab. Hit the *Execute Query* button to execute basic query that should return all results from Solr. The result of a query **must not be empty**.
 
 ![alt text](images/solr-collection-acceptance.png "Solr collection selection")
+
+
 ![alt text](images/solr-query-acceptance.png "Solr query execution")
