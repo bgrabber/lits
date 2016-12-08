@@ -184,17 +184,11 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ###Installing Lily-Hbase-Indexer & Solr services###
     Instalation is really simple. Just add both services(Lily and Solr) to your cluster.
     ![alt text](images/add-service.png "Adding service to cluster")
-
     ![alt text](images/install-solr.png "Choosing Solr to install")
-
     ![alt text](images/solr-hosts.png "Choosing Solr hosts")
-
     ![alt text](images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
-
     ![alt text](images/add-service.png "Adding service to cluster")
-
     ![alt text](images/install-lily.png "Choosing Lily to install")
-
     ![alt text](images/lily-hosts.png "Choosing Lily to install")
 
 ###Configuring Solr###
