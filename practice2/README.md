@@ -1,7 +1,7 @@
 ##Environment setup##
-  AWS Cloudera cluster from previous practice
-  Java at least 1.7 version is required on development machine
-  Maven is required on development machine
+  * AWS Cloudera cluster from previous practice
+  * Java at least **1.7 version** is required on development machine
+  * **Maven is required** on development machine
 
 ##Main practice tasks##
 
@@ -91,17 +91,22 @@
 After we've prepared schema for Hbase we need to test whether our schema was properly configured and working. To do this, we'll put some data into Hbase using Kundera and test if data was put successfully into Hbase. To start with, we'll create simple entry point of an application and also a test class to check whether everything is working properly. After we'll implement entry point and test class, we'll run the created application on cluster to actually check if everything is working.
 
 ###Creating entry point###
-    You will need to create a Java class that need to have public static void main(String[] args) method. This will be entry point of our application. In the main method you should create all three entities MedicalRecord, Patient and Physician and fill them with data. After that you need to *persist()* them all into storage.
+
+You will need to create a Java class that need to have public static void main(String[] args) method. This will be entry point of our application. In the main method you should create all three entities MedicalRecord, Patient and Physician and fill them with data. After that you need to *persist()* them all into storage.
+
 ###Creating tests###
-    After you've successfully put data into storage, now it's time to test whether everything is okay. To start with, you need to build up test project that is located in practice2 folder and called **kundera-test**.
-    To do this you need to go to project directory
+
+After you've successfully put data into storage, now it's time to test whether everything is okay. To start with, you need to build up test project that is located in practice2 folder and called **kundera-test**.
+To do this you need to go to project directory
 
 ```bash
     cd location/kundera-test
     //and build it
     mvn clean install
 ```
-    Now you need to add kundera-test project as a dependency to your project, this will allow my test suite to be visible from your created project.
+
+Now you need to add kundera-test project as a dependency to your project, this will allow my test suite to be visible from your created project.
+
 ```xml
     <dependency>
     <groupId>com.lits.kundera</groupId>
@@ -109,17 +114,19 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
     <version>1.0-SNAPSHOT</version>
     </dependency>
 ```
-    Then you should create a test class that will **extend** provided test suite by extending **BaseTest** class. Compiler will warn you that you should implement method *customTest()*.This will be your test task for practice - implement *customTest()* method. So after you put your data into storage, now let's write three queries for each table.
 
-    First query should check whether returning list of object is not empty and contain one item when you execute **select p from Physician p** query.
+Then you should create a test class that will **extend** provided test suite by extending **BaseTest** class. Compiler will warn you that you should implement method *customTest()*.This will be your test task for practice - implement *customTest()* method. So after you put your data into storage, now let's write three queries for each table.
 
-    Second query should filter Patient by name, so when you execute **select p from Patient p where p.firstName = some_name** where *some_name* is the value you've put for Patient entity with *setFirstName(String name)*. This means that query should not return an empty result and the size of returned list should be equal to 1.
+First query should check whether returning list of object is not empty and contain one item when you execute **select p from Physician p** query.
 
-    Third query should filter Medical Record by type, so when you execute **select mr from MedicalRecord mr where mr.type = some_type** where *some_type* is DIFFERENT value you've put for MedicalRecord entity with *setType(String type)*. This means that query should return an empty result and the size of returned list should be equal to 0.
+Second query should filter Patient by name, so when you execute **select p from Patient p where p.firstName = some_name** where *some_name* is the value you've put for Patient entity with *setFirstName(String name)*. This means that query should not return an empty result and the size of returned list should be equal to 1.
 
-    To properly launch test you should make an instance of your test class and then execute *runSuite()* method to launch all tests.
+Third query should filter Medical Record by type, so when you execute **select mr from MedicalRecord mr where mr.type = some_type** where *some_type* is DIFFERENT value you've put for MedicalRecord entity with *setType(String type)*. This means that query should return an empty result and the size of returned list should be equal to 0.
+
+To properly launch test you should make an instance of your test class and then execute *runSuite()* method to launch all tests.
 
 * So at the end, your entry point should have something similar flow:
+
 ```java
     public static void main(String[] args) {
       putDataInStorage()
@@ -129,6 +136,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
 
 ###Adding plugins###
+
 * Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into **<build><plugins></plugins></build>** section(if there is none, create it in pom.xml).
 ```xml
           <plugin>
@@ -159,7 +167,9 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
 
 ###Running example###
+
 * Now we need to create our fat jar and run it on cluster. To do this we need to execute maven packaging command in project directory and then copy created jar into cluster(**IMPORTANT** put your jar to cloudera.master as by default it's the node where zookeeper service is running).
+
 ```bash
     cd path_to_project
     mvn clean package
@@ -169,6 +179,7 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
     scp your-jar-with-dependencies.jar aws_user@cloudera.master:~/
 ```
 * Now we need to run the example and collect the output.**IMPORTANT you should not forget to collect the execution output as it will be needed as a part of practice acceptance**
+
 ```bash
   //logging in on cloudera master
   ssh aws_user@cloudera.master
@@ -177,19 +188,21 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 ```
 
 ##Hbase Indexing##
-  We'll index few columns in Medical Record table
 
-  To properly set up indexing for Hbase, we'll use external services as Hbase does not support indexes. So Cloudera offers indexing via [Solr](http://lucene.apache.org/solr/) with he help of [Lily](http://ngdata.github.io/hbase-indexer/). So using Hbase Solr and Lily, indexing flow will look like this: Record that comes to Hbase, is replicated for Lily Hbase Indexer, that will transform Hbase Record into SolrDocument object and then will be sent directly to Solr whick will index and store data.
+We'll index few columns in Medical Record table
+
+To properly set up indexing for Hbase, we'll use external services as Hbase does not support indexes. So Cloudera offers indexing via [Solr](http://lucene.apache.org/solr/) with he help of [Lily](http://ngdata.github.io/hbase-indexer/). So using Hbase Solr and Lily, indexing flow will look like this: Record that comes to Hbase, is replicated for Lily Hbase Indexer, that will transform Hbase Record into SolrDocument object and then will be sent directly to Solr whick will index and store data.
 
 ###Installing Lily-Hbase-Indexer & Solr services###
-    Instalation is really simple. Just add both services(Lily and Solr) to your cluster.
-    ![alt text](images/add-service.png "Adding service to cluster")
-    ![alt text](images/install-solr.png "Choosing Solr to install")
-    ![alt text](images/solr-hosts.png "Choosing Solr hosts")
-    ![alt text](images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
-    ![alt text](images/add-service.png "Adding service to cluster")
-    ![alt text](images/install-lily.png "Choosing Lily to install")
-    ![alt text](images/lily-hosts.png "Choosing Lily to install")
+Installation is really simple. Just add both services(Lily and Solr) to your cluster.
+
+![alt text](images/add-service.png "Adding service to cluster")
+![alt text](images/install-solr.png "Choosing Solr to install")
+![alt text](images/solr-hosts.png "Choosing Solr hosts")
+![alt text](images/solr-paths.png "Choosing Solr HDFS and Zookeeper paths")
+![alt text](images/add-service.png "Adding service to cluster")
+![alt text](images/install-lily.png "Choosing Lily to install")
+![alt text](images/lily-hosts.png "Choosing Lily to install")
 
 ###Configuring Solr###
     Solr configuration is rather simple. All you need to do manually - properly set up schema.xml - configuration file that will know what columns from SolrDocument that will Lily send to Solr should be indexed and stored. To tart with, we need to create so-called Solr collection - set of fields for indexing that are gathered in one common configuration. Solr provide scripts to prepare default collection. We'll use them and then change the configuration a bit. Login into your *cloudera.master* node and let's start:
