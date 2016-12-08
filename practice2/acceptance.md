@@ -2,6 +2,8 @@
 
   For this practice task will still require taking screenshots and attaching output of your application with test suite. You should fill all the tasks in the [practice acceptance document](https://docs.google.com/spreadsheets/d/1y50_13xftT4ATGkTItBwYbsufgdf2ExtrvDLmYen4Sw/edit?usp=sharing) to successfully pass the practice.
 
+  **BIG WARN. Persons that haven't completed first practice won't have acceptance marks  until they'll finish first practice task.**
+
 
 ###Attaching logs###
 
