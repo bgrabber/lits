@@ -1,5 +1,6 @@
 package com.lits.kundera.test;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
@@ -14,6 +15,7 @@ import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.UUID;
 
 public abstract class BaseTest {
     public static final String TABLES_PHYSICIAN = "physicians";
@@ -384,6 +386,7 @@ public abstract class BaseTest {
      * @throws IOException
      */
     public void prefixScanTest(String medicalRecordType, byte[] patientId) throws IOException {
+
         System.out.println("======= Starting... =======");
         System.out.println("Preparing full scan");
         //configuring scan to search only for efined medical record type
@@ -400,7 +403,7 @@ public abstract class BaseTest {
 
         //now with prefix
         System.out.println("Preparing prefix scan");
-        Scan prefixScan = Util.createKeyPrefixScan(patientId);
+        Scan prefixScan = Util.createKeyPrefixScan(ArrayUtils.addAll(patientId, new byte[16]));
         prefixScan.setFilter(singleColumnValueFilter);
 
         startTime = System.currentTimeMillis();
@@ -413,16 +416,20 @@ public abstract class BaseTest {
 
     private void scannerCheck(ResultScanner resultScanner, String medicalRecordType, long startTime) throws IOException {
         long executionTime;
-        if(resultScanner.iterator().hasNext()) {
+        if(resultScanner != null && resultScanner.iterator().hasNext()) {
             while(resultScanner.iterator().hasNext()) {
                 Result result = resultScanner.next();
-                byte[] value = result.getValue(TABLES_MEDICAL_RECORD.getBytes(),
-                        COLUMN_MEDICAL_RECORD_TYPE.getBytes());
+                if(result != null  && !result.isEmpty()) {
+                    byte[] value = result.getValue(TABLES_MEDICAL_RECORD.getBytes(),
+                            COLUMN_MEDICAL_RECORD_TYPE.getBytes());
 
-                if(Arrays.equals(value, medicalRecordType.getBytes())) {
-                    System.out.println("Found record");
-                    executionTime = System.currentTimeMillis() - startTime;
-                    System.out.printf("It took %d ms to find the record", executionTime);
+                    if(Arrays.equals(value, medicalRecordType.getBytes())) {
+                        System.out.println("Record found");
+                        executionTime = System.currentTimeMillis() - startTime;
+                        System.out.printf("It took %d ms to find the record", executionTime);
+                        System.out.println();
+                        return;
+                    }
                 }
             }
         } else {
