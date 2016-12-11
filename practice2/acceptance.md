@@ -26,7 +26,7 @@ hbase(main):001:0> list
 
   You need take a screenshot of Cloudera Manager services that include Solr and Lily Hbase Indexer services to show that you've added them and they are live.
 
-  ![alt text](images/cloudera-manager-acceptance.png "Cludera Manager services")
+  ![alt text](images/cloudera-manager-acceptance.png "Cloudera Manager services")
 
 ###Solr Querying###
 
@@ -37,3 +37,44 @@ hbase(main):001:0> list
 
 
 ![alt text](images/solr-query-acceptance.png "Solr query execution")
+
+##Additional optional step##
+
+In additional step you should check how different time is when executing Scan that loops through all the rows and the one that usus prefix scan where prefix is the Patient key part of Medical Record key. the difference should be significant when you have some data already in your Hbase storage. To execute additional step, you should just execute the code below in your entry point of application after test suite runs. Then attach the log of execution to the acceptance mark document.
+
+```java
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Table;
+
+Table medicalRecordsTable = null;
+Connection connection = null;
+try {
+    Configuration configuration = new Configuration(true);
+    configuration.set("hbase.zookeeper.quorum", "localhost");
+    configuration.set("hbase.zookeeper.property.clientPort", "2181");
+    connection = ConnectionFactory.createConnection(configuration);
+    medicalRecordsTable = connection.getTable(TableName.valueOf(BaseTest.TABLES_MEDICAL_RECORD));
+
+
+    com.lits.kundera.test.BaseTest.prefixScanTest("type", patientId, medicalRecordsTable);
+} catch (IOException e) {
+    System.out.println("Exception exetucing scans : " + e.getMessage());
+} finally {
+    try {
+        if(medicalRecordsTable != null) {
+            medicalRecordsTable.close();
+        }
+
+        if(connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+
+    } catch (IOException e) {
+        System.out.println("Exception closing tables : " + e.getMessage());
+    }
+
+}
+```

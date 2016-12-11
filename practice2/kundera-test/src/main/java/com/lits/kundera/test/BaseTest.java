@@ -385,7 +385,7 @@ public abstract class BaseTest {
      * @param patientId patient id as a part of a medical record key
      * @throws IOException
      */
-    public void prefixScanTest(String medicalRecordType, byte[] patientId) throws IOException {
+    public static void prefixScanTest(String medicalRecordType, byte[] patientId, Table medicalRecordsHbaseTable) throws IOException {
 
         System.out.println("======= Starting... =======");
         System.out.println("Preparing full scan");
@@ -398,7 +398,7 @@ public abstract class BaseTest {
         //start counting the time
         long startTime = System.currentTimeMillis();
 
-        ResultScanner resultScanner = medicalRecordsTable.getScanner(fullScan);
+        ResultScanner resultScanner = medicalRecordsHbaseTable.getScanner(fullScan);
         scannerCheck(resultScanner, medicalRecordType, startTime);
 
         //now with prefix
@@ -408,13 +408,13 @@ public abstract class BaseTest {
 
         startTime = System.currentTimeMillis();
 
-       resultScanner = medicalRecordsTable.getScanner(prefixScan);
+       resultScanner = medicalRecordsHbaseTable.getScanner(prefixScan);
        scannerCheck(resultScanner, medicalRecordType, startTime);
 
         System.out.println("======= Finishing... =======");
     }
 
-    private void scannerCheck(ResultScanner resultScanner, String medicalRecordType, long startTime) throws IOException {
+    private static void scannerCheck(ResultScanner resultScanner, String medicalRecordType, long startTime) throws IOException {
         long executionTime;
         if(resultScanner != null && resultScanner.iterator().hasNext()) {
             while(resultScanner.iterator().hasNext()) {
