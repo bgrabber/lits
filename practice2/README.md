@@ -81,10 +81,23 @@
       <property name="kundera.client.property" value="name_of_your_xml_with_properties.xml" />
 ```
 
-* When adding **@Table** your should put *schema* property you should put **default@your_persistence_unit** do that tables will be created in default Hbase namespace.
+* When adding **@Table** your should put *schema* property and as a value to that property **default@your_persistence_unit** so that tables will be created in default Hbase namespace.
 
 * When adding property *kundera.ddl.auto.prepare* to your persistence.xml, put value **update** instead of **create**, as Kundera will try to delete reserved **default** namespace in Hbase.
 
+* To add additional logging, Kundera requires properly configured log4j library. To add that configuration, create a **log4j.properties** file with next content:
+```python
+# Root logger option
+log4j.rootLogger=INFO, stdout
+
+# Direct log messages to stdout
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
+```
+
+This should add more informative logs of what exactly Kundera is trying to do(load persistence unit, create tables, etc.)
 
 ##Running main program with tests##
 
