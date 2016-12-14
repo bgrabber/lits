@@ -242,9 +242,9 @@ Installation is really simple. Just add both services(Lily and Solr) to your clu
 ```bash
       ssh aws_user@cloudera.master
       hbase shell
-      hbase shell> disable \'medical_records\'
-      hbase shell> alter \'medical_records\', {NAME => \'medical_records\', REPLICATION_SCOPE => 1}
-      hbase shell> enable \'medical_records\'
+      hbase shell> disable 'medical_records'
+      hbase shell> alter 'medical_records', {NAME => 'medical_records', REPLICATION_SCOPE => 1}
+      hbase shell> enable 'medical_records'
 ```
 * Set Zookeeper quorum in Lily configuration.
       To do that, you need to add two properties to hbase-indexer-site.xml configuration file. Login to *cloudera.master*
