@@ -150,7 +150,7 @@ To properly launch test you should make an instance of your test class and then 
 
 ###Adding plugins###
 
-* Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into **<build><plugins></plugins></build>** section(if there is none, create it in pom.xml).
+* Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into **'<build><plugins></plugins></build>'** section(if there is none, create it in pom.xml).
 ```xml
           <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -218,15 +218,19 @@ Installation is really simple. Just add both services(Lily and Solr) to your clu
 ![alt text](images/lily-hosts.png "Choosing Lily to install")
 
 ###Configuring Solr###
-    Solr configuration is rather simple. All you need to do manually - properly set up schema.xml - configuration file that will know what columns from SolrDocument that will Lily send to Solr should be indexed and stored. To tart with, we need to create so-called Solr collection - set of fields for indexing that are gathered in one common configuration. Solr provide scripts to prepare default collection. We'll use them and then change the configuration a bit. Login into your *cloudera.master* node and let's start:
+    Solr configuration is rather simple. All you need to do manually - properly set up [schema.xml](https://github.com/marianfaryna/lits/blob/master/practice2/schema.xml) - configuration file that will know what columns from SolrDocument that will Lily send to Solr should be indexed and stored. To tart with, we need to create so-called Solr collection - set of fields for indexing that are gathered in one common configuration. Solr provide scripts to prepare default collection. We'll use them and then change the configuration a bit. Login into your *cloudera.master* node and let's start:
 ```bash
     ssh aws_user@cloudera.master
+
     //generate default collection files
     solrctl instancedir --generate ~/hbase-collection1
-    //now we need to update schema. Default schema is too cumbersome, so [here is](schema.xml) the one that will fit for Medical Record //table that we will use
+
+    //now we need to update schema. Default schema is too cumbersome, so schema.xml the one that will fit for our case. We remove default one and then put our schema into conf folder
+    cp ~/location_of_new/schema.xml ~/hbase-collection1/conf
 
     //now we create Solr collection by putting all collection files into Solr
-    solrctl instancedir --create hbase-collection1 $HOME/hbase-collection1
+    solrctl instancedir --create hbase-collection1 ~/hbase-collection1
+
     //and the actual collection creation
     solrctl collection --create hbase-collection1
 ```
