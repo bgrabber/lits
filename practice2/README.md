@@ -183,7 +183,7 @@ To properly launch test you should make an instance of your test class and then 
 
 * Now we need to create our fat jar and run it on cluster. To do this we need to execute maven packaging command in project directory and then copy created jar into cluster(**IMPORTANT** put your jar to cloudera.master as by default it's the node where zookeeper service is running).
 
-```bash
+```python
     cd path_to_project
     mvn clean package
     //go for a fat jar
@@ -193,7 +193,7 @@ To properly launch test you should make an instance of your test class and then 
 ```
 * Now we need to run the example and collect the output.**IMPORTANT you should not forget to collect the execution output as it will be needed as a part of practice acceptance**
 
-```bash
+```python
   //logging in on cloudera master
   ssh aws_user@cloudera.master
   //now executing out Java application and redirecting output into file.
@@ -219,20 +219,21 @@ Installation is really simple. Just add both services(Lily and Solr) to your clu
 
 ###Configuring Solr###
     Solr configuration is rather simple. All you need to do manually - properly set up [schema.xml](https://github.com/marianfaryna/lits/blob/master/practice2/schema.xml) - configuration file that will know what columns from SolrDocument that will Lily send to Solr should be indexed and stored. To tart with, we need to create so-called Solr collection - set of fields for indexing that are gathered in one common configuration. Solr provide scripts to prepare default collection. We'll use them and then change the configuration a bit. Login into your *cloudera.master* node and let's start:
-```bash
-    ssh aws_user@cloudera.master
 
-    //generate default collection files
-    solrctl instancedir --generate ~/hbase-collection1
+```python
+ssh aws_user@cloudera.master
 
-    //now we need to update schema. Default schema is too cumbersome, so schema.xml the one that will fit for our case. We remove default one and then put our schema into conf folder
-    cp ~/location_of_new/schema.xml ~/hbase-collection1/conf
+//generate default collection files
+solrctl instancedir --generate ~/hbase-collection1
 
-    //now we create Solr collection by putting all collection files into Solr
-    solrctl instancedir --create hbase-collection1 ~/hbase-collection1
+//now we need to update schema. Default schema is too cumbersome, so schema.xml the one that will fit for our case. We remove default one and then put our schema into conf folder
+cp ~/location_of_new/schema.xml ~/hbase-collection1/conf
 
-    //and the actual collection creation
-    solrctl collection --create hbase-collection1
+//now we create Solr collection by putting all collection files into Solr
+solrctl instancedir --create hbase-collection1 ~/hbase-collection1
+
+//and the actual collection creation
+solrctl collection --create hbase-collection1
 ```
 
 ###Configuring Lily###
