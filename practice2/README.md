@@ -150,7 +150,7 @@ To properly launch test you should make an instance of your test class and then 
 
 ###Adding plugins###
 
-* Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into **'<build><plugins></plugins></build>'** section(if there is none, create it in pom.xml).
+* Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into *<build><plugins></plugins></build>* section(if there is none, create it in pom.xml).
 ```xml
           <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
