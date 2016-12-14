@@ -277,9 +277,9 @@ solrctl collection --create hbase-collection1
    </indexer>
 ```
 
-      Now we need to fill */etc/hbase-solr/conf/morphlines.conf* with proper values. This configuration file will describe what Hbase columns from row should be mapped to SolrDocument fields. The example of configuration file is located [here](morphlines.conf). Where we map Medical Record columns as type and description to Solr Document fields with same name and type, so that these two columns from Hbase will be indexed in Solr.
+*  Now we need to fill */etc/hbase-solr/conf/morphlines.conf* with proper values. This configuration file will describe what Hbase columns from row should be mapped to SolrDocument fields. The example of configuration file is located [here](morphlines.conf). Where we map Medical Record columns as type and description to Solr Document fields with same name and type, so that these two columns from Hbase will be indexed in Solr.
 
-      The last thing that should be done, is to launch MapReduce provided job, that will index all existing rows in Hbase. To do that, you need to launch this job with parameters:
+The last thing that should be done, is to launch MapReduce provided job, that will index all existing rows in Hbase. To do that, you need to launch this job with parameters:
 ```bash
     sudo hadoop --config /etc/hadoop/conf jar /opt/cloudera/parcels/CDH-5.8.2-1.cdh5.8.2.p0.3/lib/hbase-solr/tools/hbase-indexer-mr-job.jar --conf /etc/hbase/conf/hbase-site.xml -D 'mapred.child.java.opts=-Xmx500m' --hbase-indexer-file /home/ec2-user/morphline-hbase-mapper.xml --zk-host cloudera.master/solr --collection hbase-collection1 --go-live
 ```
