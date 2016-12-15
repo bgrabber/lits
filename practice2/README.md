@@ -99,6 +99,15 @@ log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1
 
 This should add more informative logs of what exactly Kundera is trying to do(load persistence unit, create tables, etc.)
 
+* To create array of bytes from UUID, you should use *Util* class from dependency provided for practice.
+```java
+//creating random UUID
+UUID patientUUID = UUID.randomUUID();
+//transforming it into bytes
+byte[] patientId = EntityUtil.toBytes(patientUUID);
+
+```
+
 ##Running main program with tests##
 
 After we've prepared schema for Hbase we need to test whether our schema was properly configured and working. To do this, we'll put some data into Hbase using Kundera and test if data was put successfully into Hbase. To start with, we'll create simple entry point of an application and also a test class to check whether everything is working properly. After we'll implement entry point and test class, we'll run the created application on cluster to actually check if everything is working.
@@ -277,7 +286,7 @@ solrctl collection --create hbase-collection1
    </indexer>
 ```
 
-*  Now we need to fill */etc/hbase-solr/conf/morphlines.conf* with proper values. This configuration file will describe what Hbase columns from row should be mapped to SolrDocument fields. The example of configuration file is located [here](morphlines.conf). Where we map Medical Record columns as type and description to Solr Document fields with same name and type, so that these two columns from Hbase will be indexed in Solr.
+*  Now we need to fill */etc/hbase-solr/conf/morphlines.conf* with proper values. This configuration file will describe what Hbase columns from row should be mapped to SolrDocument fields. The example of configuration file is located [morphlines.conf](https://github.com/marianfaryna/lits/blob/master/practice2/morphlines.conf). Where we map Medical Record columns as type and description to Solr Document fields with same name and type, so that these two columns from Hbase will be indexed in Solr.
 
 The last thing that should be done, is to launch MapReduce provided job, that will index all existing rows in Hbase. To do that, you need to launch this job with parameters:
 ```bash

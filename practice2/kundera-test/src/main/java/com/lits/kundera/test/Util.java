@@ -2,7 +2,9 @@ package com.lits.kundera.test;
 
 import org.apache.hadoop.hbase.client.Scan;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * Util class for scanning Hbase
@@ -11,6 +13,7 @@ public class Util {
     private static final int MAX_KEY_BYTE = 0xff;
     private static final int DIGITS_IN_BYTE = 2;
     private static final String[] HEX_STRING = prepareHexStringTable();
+    private static final int SIZE_IN_BYTES = 16;
 
     private static String[] prepareHexStringTable() {
         final String[] table = new String[MAX_KEY_BYTE + 1];
@@ -30,25 +33,6 @@ public class Util {
         return result;
     }
 
-    private static byte[] next(final byte[] key) {
-
-        byte[] nextKey = Arrays.copyOf(key, key.length);
-        boolean overflow = true;
-        for (int i = nextKey.length - 1; i >= 0; --i) {
-            ++nextKey[i];
-            if (nextKey[i] != 0) {
-                overflow = false;
-                break;
-            }
-        }
-
-        if (overflow) {
-            nextKey = Arrays.copyOf(key, key.length + 1);
-            nextKey[key.length] = (byte) MAX_KEY_BYTE;
-        }
-        return nextKey;
-    }
-
     public static String toString(final byte[] key, final int length) {
         final StringBuilder sb = new StringBuilder(length * DIGITS_IN_BYTE);
         if (key != null) {
@@ -57,5 +41,30 @@ public class Util {
             }
         }
         return sb.toString();
+    }
+
+
+    /**
+     * Get array of bytes from UUID.
+     * @param uuid UUID.
+     * @return Array of UUID bytes.
+     */
+    public static byte[] toBytes(final UUID uuid) {
+        final ByteBuffer buffer = ByteBuffer.allocate(SIZE_IN_BYTES);
+        buffer.putLong(uuid.getMostSignificantBits());
+        buffer.putLong(uuid.getLeastSignificantBits());
+        return buffer.array();
+    }
+
+    /**
+     * Get UUID from array of bytes.
+     * @param bytes UUID as array of bytes.
+     * @return UUID.
+     */
+    public static UUID fromBytes(final byte[] bytes) {
+        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        final long ms = buffer.getLong();
+        final long ls = buffer.getLong();
+        return new UUID(ms, ls);
     }
 }
