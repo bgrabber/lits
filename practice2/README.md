@@ -116,47 +116,6 @@ After we've prepared schema for Hbase we need to test whether our schema was pro
 
 You will need to create a Java class that need to have public static void main(String[] args) method. This will be entry point of our application. In the main method you should create all three entities MedicalRecord, Patient and Physician and fill them with data. After that you need to *persist()* them all into storage.
 
-###Creating tests###
-
-After you've successfully put data into storage, now it's time to test whether everything is okay. To start with, you need to build up test project that is located in practice2 folder and called **kundera-test**.
-To do this you need to go to project directory
-
-```bash
-    cd location/kundera-test
-    //and build it
-    mvn clean install
-```
-
-Now you need to add kundera-test project as a dependency to your project, this will allow my test suite to be visible from your created project.
-
-```xml
-    <dependency>
-    <groupId>com.lits.kundera</groupId>
-    <artifactId>testing</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    </dependency>
-```
-
-Then you should create a test class that will **extend** provided test suite by extending **BaseTest** class. Compiler will warn you that you should implement method *customTest()*.This will be your test task for practice - implement *customTest()* method. So after you put your data into storage, now let's write three queries for each table.
-
-First query should check whether returning list of object is not empty and contain one item when you execute **select p from Physician p** query.
-
-Second query should filter Patient by name, so when you execute **select p from Patient p where p.firstName = some_name** where *some_name* is the value you've put for Patient entity with *setFirstName(String name)*. This means that query should not return an empty result and the size of returned list should be equal to 1.
-
-Third query should filter Medical Record by type, so when you execute **select mr from MedicalRecord mr where mr.type = some_type** where *some_type* is DIFFERENT value you've put for MedicalRecord entity with *setType(String type)*. This means that query should return an empty result and the size of returned list should be equal to 0.
-
-To properly launch test you should make an instance of your test class and then execute *runSuite()* method to launch all tests.
-
-* So at the end, your entry point should have something similar flow:
-
-```java
-    public static void main(String[] args) {
-      putDataInStorage()
-      YourTestClass testClass = new YourTestClass();
-      testClass.runSuite();
-    }
-```
-
 ###Adding plugins###
 
 * Now let's add some configuration that will allow us to execute our created application. You need to add two simple plugins to your **pom.xml** configuration file. One is standard compiler plugin that will compile your source using Java 1.7 version. The other on is an assembly plugin. We need it to pack our code in one fat jar with all the libs so that we won't have any problems with Java classpath. The fat jar will have *jar-with-dependencies.jar* suffix which is important as if you'll try to run your entry point class with default jar, it will fail. To add plugins you should add below xml components into `<build><plugins></plugins></build>` section(if there is none, create it in pom.xml).
@@ -207,6 +166,47 @@ To properly launch test you should make an instance of your test class and then 
   ssh aws_user@cloudera.master
   //now executing out Java application and redirecting output into file.
   /usr/java/jdk1.7.0_67-cloudera/bin/java -classpath your-jar-with-dependencies.jar your.entry.PointClass >> asdf.log
+```
+
+###Creating tests###
+
+After you've successfully put data into storage, now it's time to test whether everything is okay. To start with, you need to build up test project that is located in practice2 folder and called **kundera-test**.
+To do this you need to go to project directory
+
+```bash
+    cd location/kundera-test
+    //and build it
+    mvn clean install
+```
+
+Now you need to add kundera-test project as a dependency to your project, this will allow my test suite to be visible from your created project.
+
+```xml
+    <dependency>
+    <groupId>com.lits.kundera</groupId>
+    <artifactId>testing</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    </dependency>
+```
+
+Then you should create a test class that will **extend** provided test suite by extending **BaseTest** class. Compiler will warn you that you should implement method *customTest()*.This will be your test task for practice - implement *customTest()* method. So after you put your data into storage, now let's write three queries for each table.
+
+First query should check whether returning list of object is not empty and contain one item when you execute **select p from Physician p** query.
+
+Second query should filter Patient by name, so when you execute **select p from Patient p where p.firstName = some_name** where *some_name* is the value you've put for Patient entity with *setFirstName(String name)*. This means that query should not return an empty result and the size of returned list should be equal to 1.
+
+Third query should filter Medical Record by type, so when you execute **select mr from MedicalRecord mr where mr.type = some_type** where *some_type* is DIFFERENT value you've put for MedicalRecord entity with *setType(String type)*. This means that query should return an empty result and the size of returned list should be equal to 0.
+
+To properly launch test you should make an instance of your test class and then execute *runSuite()* method to launch all tests.
+
+* So at the end, your entry point should have something similar flow:
+
+```java
+    public static void main(String[] args) {
+      putDataInStorage()
+      YourTestClass testClass = new YourTestClass();
+      testClass.runSuite();
+    }
 ```
 
 ##Hbase Indexing##
