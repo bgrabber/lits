@@ -265,6 +265,7 @@ solrctl collection --create hbase-collection1
 ```
 ```xml
       //add following configuration properties
+      <configuration>
       <property>
         <name>hbase.zookeeper.quorum</name>
         <value>cloudera.master</value>
@@ -273,11 +274,12 @@ solrctl collection --create hbase-collection1
         <name>hbaseindexer.zookeeper.connectstring</name>
         <value>cloudera.master:2181</value>
       </property>
+    </configuration>
 ```
       //now restart Lily Indexer service from Cloudera UI
 
 * Add proper configuration files
-      We need two configuration files for Lily. One is to define actual Indexer and bind it to Hbase table so Indexer can index data in specific Hbase table. The file is called *morphline-hbase-mapper.xml*. The content of this file is simple xml configuration as below
+      We need two configuration files for Lily. One is to define actual Indexer and bind it to Hbase table so Indexer can index data in specific Hbase table. The file is called *~/morphline-hbase-mapper.xml*. The content of this file is simple xml configuration as below
 ```xml
     <?xml version="1.0"?>
     <indexer table="medical_records" mapper="com.ngdata.hbaseindexer.morphline.MorphlineResultToSolrMapper">
@@ -290,7 +292,7 @@ solrctl collection --create hbase-collection1
 
 The last thing that should be done, is to launch MapReduce provided job, that will index all existing rows in Hbase. To do that, you need to launch this job with parameters:
 ```bash
-    sudo hadoop --config /etc/hadoop/conf jar /opt/cloudera/parcels/CDH-5.8.2-1.cdh5.8.2.p0.3/lib/hbase-solr/tools/hbase-indexer-mr-job.jar --conf /etc/hbase/conf/hbase-site.xml -D 'mapred.child.java.opts=-Xmx500m' --hbase-indexer-file /home/ec2-user/morphline-hbase-mapper.xml --zk-host cloudera.master/solr --collection hbase-collection1 --go-live
+    sudo hadoop --config /etc/hadoop/conf jar /opt/cloudera/parcels/CDH-5.8.2-1.cdh5.8.2.p0.3/lib/hbase-solr/tools/hbase-indexer-mr-job.jar --conf /etc/hbase/conf/hbase-site.xml -D 'mapred.child.java.opts=-Xmx500m' --hbase-indexer-file ~/morphline-hbase-mapper.xml --zk-host cloudera.master/solr --collection hbase-collection1 --go-live
 ```
 
 ###Viewing results###
