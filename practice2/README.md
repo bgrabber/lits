@@ -311,6 +311,6 @@ The last thing that should be done, is to launch MapReduce provided job, that wi
 
 You need to write a MapReduce job that will loop through your MedicalRecord table and count per each Patient the amount of different Medical Records by type. All the information you need is in Medical Record table. To get Patient info, you need to extract the Patient's key from from a part of Medical Record key and then get the full information of Patient by extracted key. The type is already present in Medical Record as a column. So in the end the result of a MapReduce job should be a file that will have next rows:
 
-**Patient first name Patient last name - type of medical record (amount)**
+**Patient ID - type of medical record (amount)**
 
 As there was no data set prepared for the practice, the amount of records in your table can be ~10 as the most important part of the practice is to *understand how MapReduce works* and implement the solution for the task.
