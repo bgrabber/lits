@@ -232,11 +232,16 @@ Installation is really simple. Just add both services(Lily and Solr) to your clu
 ```python
 ssh aws_user@cloudera.master
 
+//go to your home folder and execute commands below
+cd ~/
+
+scp -i ~/key.pem  path_to_practice2/schema.xml ec2-user@54.71.236.160:~/
+
 //generate default collection files
 solrctl instancedir --generate ~/hbase-collection1
 
 //now we need to update schema. Default schema is too cumbersome, so schema.xml the one that will fit for our case. We remove default one and then put our schema into conf folder
-cp ~/location_of_new/schema.xml ~/hbase-collection1/conf
+cp ~/schema.xml ~/hbase-collection1/conf
 
 //now we create Solr collection by putting all collection files into Solr
 solrctl instancedir --create hbase-collection1 ~/hbase-collection1
