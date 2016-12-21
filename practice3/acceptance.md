@@ -11,7 +11,7 @@ This practice acceptance will as usual, so no new steps will be introduced here.
 
 After you've installed Spark Service, you should see the service right on the main dashboard of Cloudera Manager. So you need to provide that screenshot which will show that your Spark service is up and running.
 
-![alt text](images/park-history-server.png "Spark service cloudera")
+![alt text](images/spark-history-server.png "Spark service cloudera")
 
 ##Spark execution logs##
 
@@ -25,6 +25,6 @@ After that, in acceptance document you should provide the link to log file.
 
 ##Congratulations##
 
-Yo've finished that hard and cumbersome path that should have taught you basics of Hbase, Solr indexing and slight MapReduce and Spark. Hope practice was not that bad. And you enjoyed it somewhat. Thanks.
+You've finished that hard and cumbersome path that should have taught you basics of Hbase, Solr indexing and slight MapReduce and Spark. Hope practice was not that bad. And you enjoyed it somewhat. Thanks.
 
 Marian

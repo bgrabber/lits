@@ -51,8 +51,8 @@ spark-submit --class com.lits.spark.Main --master yarn --deploy-mode client /hom
 
 After application have finished the execution, you should check the **history server** where all the Spark tasks took place and each task have done it's job. To do that you should to to History Server UI that should be located at *http://cloudera.master:18088/* and the latest job should be the one that you've recently launched.
 
-![alt text](images/park-history-server.png "Spark history server")
+![alt text](images/spark-history-server.png "Spark history server")
 
 ![alt text](images/spark-job.png "Spark job")
 
-![alt text](images/spark-job-execution..png "Jo Execution Details")
+![alt text](images/spark-job-execution.png "Job Execution Details")
